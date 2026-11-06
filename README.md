@@ -1,5 +1,7 @@
 # ΔEVPSC: Elasto-Visco-Plastic Self-Consistent polycrystal model
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23999006.svg)](https://doi.org/10.5281/zenodo.23999006)
+
 ΔEVPSC (delta-EVPSC) is a Fortran implementation of an
 elasto-visco-plastic self-consistent (EVPSC) polycrystal plasticity
 model based on a single homogeneous effective medium (HEM). It can be run as a stand-alone

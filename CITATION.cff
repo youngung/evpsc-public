@@ -3,6 +3,8 @@ message: "If you use EVPSC, please cite the article below and the original VPSC 
 title: "ΔEVPSC (delta-EVPSC): Elasto-visco-plastic self-consistent polycrystal plasticity code"
 type: software
 license: BSD-3-Clause
+doi: "10.5281/zenodo.23999006"
+repository-code: "https://github.com/youngung/evpsc-public"
 authors:
   - family-names: Jeong
     given-names: Youngung
