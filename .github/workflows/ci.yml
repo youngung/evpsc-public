@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install GNU Fortran
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes gfortran
+      - name: Generate Fortran dimensions
+        run: |
+          python pyscripts/gen_dim.py \
+            -o src/vpsc_src/parameters.dim \
+            --nphmx 1 --ngrmx 100 --nmodmx 6 --ntwmmx 2 \
+            --nsysmx 48 --ntwsmx 24
+      - name: Build stand-alone EVPSC
+        run: make -j2 evpsc
+      - name: Check executable
+        run: test -x evpsc
+      - name: Run Python tests
+        run: make test-python

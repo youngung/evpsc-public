@@ -89,6 +89,21 @@ The input files follow the VPSC conventions (`vpsc7.in`, single-crystal
 and texture files). For a description of the VPSC input format, see
 Chapter 5 of Tome and Lebensohn (2023) [6].
 
+## Run tests
+
+The Python helper tests use only the Python standard library and do not
+require a Fortran compiler:
+
+```sh
+make test-python
+```
+
+GitHub Actions also builds the stand-alone `evpsc` executable with GNU
+Fortran and runs the Python tests on pushes and pull requests. The
+repository does not currently include a stand-alone simulation input
+case, so CI verifies compilation and test execution rather than running
+a material simulation.
+
 ## Run the Abaqus example
 
 A one-element Abaqus/Standard example is in `umat/src/evpsc_incr/`.
