@@ -1,0 +1,111 @@
+C **************************************************************************
+C     SUBROUTINE STAT_SHEAR_ACTIVITY_PX
+C
+C     MAKES STATISTIC ON DEFORMATION MODE ACTIVITY.
+C     CALCULATES ARRAYS:
+C     - GMAX : MAXIMUM DGAM FOR A GIVEN MODE AND A GIVEN GRAIN.
+C     - GTOT : SUM OF DGAM FOR A GIVEN MODE AND A GIVEN GRAIN.
+C     - GAVGR: SUM OF ALL DGAM FOR A GIVEN GRAIN.
+C     - GMAXG: MAXIMUM DGAM FOR A GIVEN GRAIN.
+C     - ACT  : NUMBER OF ACTIVE SYSTEMS IN A GIVEN GRAIN.
+C     - ACTIV: WEIGHTED NUMBER OF ACTIVE SYSTEMS IN A GIVEN PHASE.
+C     - GAVMOD: WEIGHTED SUM OF DGAM FOR A GIVEN MODE IN A GIVEN PHASE / GAVPH
+C     - GAVMODG: Relative contribution of a particular mode against all the shears
+C                accommodated within each grain. (used for Dr. Jongbin Go's pole figure)
+C     - GAVPH: WEIGHTED SUM OF DGAM FOR A GIVEN PHASE.
+C     - GAVACC: ACCUMULATED GAM FOR EACH DEFORMATION MODE
+C
+C     THE ABOVE ARRAYS ARE DIMENSIONED TO THE MAXIMUM NUMBER OF GRAINS AND
+C     PHASES IN COMMON/STATSH/
+C     FOR FE APPLICATION THIS COMMON IS COMMENTED OUT AND IPH VARIES BETWEEN
+C     1 AND NPH=NELEM
+C ***************************************************************************
+
+      SUBROUTINE STAT_SHEAR_ACTIVITY_PX(
+C          IN
+     $     NPH,NPHMX,NGRMX,NGR,NMODMX,NSYSMX,WPH,WGT,NMODES,NSYST,
+     $     NSM,GAMDOT,
+C          OUT
+     $     ACTIV,GAVMOD,GAVACC,GAVMODG,GAVPH)
+      implicit none
+
+      INTEGER,INTENT(IN)::NPH,NPHMX,NGRMX,NGR(0:NPHMX),NMODMX,NSYSMX,
+     $     NMODES(NPHMX),NSYST(NPHMX),NSM(NMODMX,NPHMX)
+      REAL*8,INTENT(IN):: WPH(NPHMX),WGT(NGRMX),GAMDOT(NSYSMX,NGRMX)
+      REAL*8,INTENT(OUT)::ACTIV(NPHMX),GAVMOD(NMODMX,NPHMX),
+     $     GAVACC(NMODMX,NPHMX),GAVMODG(NMODMX,NGRMX)
+C     LOCALS
+      INTEGER IS,KMO,IZ,KGR,KSY,ACT(NGRMX),IPH
+      REAL*8 GMAX(NMODMX),GTOT(NMODMX,NGRMX),GAVGR(NGRMX),
+     $     GMAXG,GABS,GMING,GAVPX,GAVPH(NPHMX)
+
+      DO IPH=1,NPH
+         DO KGR=NGR(IPH-1)+1,NGR(IPH)
+            GAVGR(KGR)=0D0
+            GAVMODG(:,KGR)=0d0
+            ACT(KGR)=0
+            GMAXG=0D0
+            IS=0
+            DO KMO=1,NMODES(IPH)
+               GMAX(KMO)=0D0
+               GTOT(KMO,KGR)=0D0
+               DO KSY=1,NSM(KMO,IPH)
+                  IS=IS+1
+                  GABS=ABS(GAMDOT(IS,KGR))
+                  GTOT(KMO,KGR)=GTOT(KMO,KGR)+GABS
+                  IF(GABS.GT.GMAX(KMO)) GMAX(KMO)=GABS
+               ENDDO
+               GAVGR(KGR)=GAVGR(KGR)+GTOT(KMO,KGR)
+               GMAXG=MAX(GMAXG,GMAX(KMO))
+            ENDDO
+            GMING=GMAXG*0.05
+            DO IZ=1,NSYST(IPH)
+               IF(ABS(GAMDOT(IZ,KGR)).GE.GMING) THEN
+                  ACT(KGR)=ACT(KGR)+1
+               ENDIF
+            ENDDO
+C       2025/MAR/26 (GRAIN SPECIFIC RELATIVE ACTIVITY)
+            IF (WGT(KGR).NE.0..and.GAVGR(KGR).NE.0.) THEN
+               DO KMO=1,NMODES(IPH)
+                  GAVMODG(KMO,KGR)=GTOT(KMO,KGR)/GAVGR(KGR)
+               ENDDO
+            ENDIF
+         ENDDO                  ! END OF KGR LOOP
+      ENDDO                     ! END OF IPH LOOP
+
+      GAVPX=0D0
+      DO IPH=1,NPH
+         ACTIV(IPH)=0D0
+         GAVPH(IPH)=0.
+         DO KMO=1,NMODES(IPH)
+            GAVMOD(KMO,IPH)=0D0
+         ENDDO
+         IF(WPH(IPH).NE.0.) THEN
+            DO KGR=NGR(IPH-1)+1,NGR(IPH)
+               DO KMO=1,NMODES(IPH)
+                  GAVMOD(KMO,IPH)=GAVMOD(KMO,IPH)+GTOT(KMO,KGR)*WGT(KGR)
+                  GAVACC(KMO,IPH)=GAVACC(KMO,IPH)+GTOT(KMO,KGR)*WGT(KGR)
+               ENDDO
+               GAVPH(IPH)=GAVPH(IPH)+GAVGR(KGR)*WGT(KGR)
+               ACTIV(IPH)=ACTIV(IPH)+ACT(KGR)*WGT(KGR)*GAVGR(KGR)
+            ENDDO
+            IF(GAVPH(IPH).NE.0.) ACTIV(IPH)=ACTIV(IPH)/GAVPH(IPH)
+            GAVPX=GAVPX+GAVPH(IPH)
+         ENDIF
+      ENDDO
+
+
+      DO IPH=1,NPH
+      DO KMO=1,NMODES(IPH)
+C         GAVMOD(KMO,IPH)=GAVMOD(KMO,IPH)/GAVPX
+         IF(WPH(IPH).NE.0..and.GAVPH(IPH).NE.0) THEN
+            GAVMOD(KMO,IPH)=GAVMOD(KMO,IPH)/GAVPH(IPH)
+         endif
+         IF (ABS(GAVMOD(KMO,IPH)).LT.1D-20)THEN
+            GAVMOD(KMO,IPH)=0D0
+         ENDIF
+      ENDDO
+      ENDDO
+
+      RETURN
+      END SUBROUTINE STAT_SHEAR_ACTIVITY_PX

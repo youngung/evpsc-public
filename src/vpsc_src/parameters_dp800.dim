@@ -1,0 +1,20 @@
+
+c     Dimension of arrays.
+c     Reduntantly large size of arrays may impact the computational speed of EVPSC-UMAT
+
+      integer NPHMX,NGRMX,NMODMX,NTWMMX,NSYSMX,NTWSMX,NNEIMX,
+     $     NDIFMX
+      integer iregime,idtderiv
+      real*8 dtref
+      parameter(NPHMX=2)
+      parameter(NGRMX=1000)
+      PARAMETER(NMODMX=2)       ! MAXIMUM # OF ACTIVE SL+TW MODES IN ANY PHASE
+      PARAMETER(NTWMMX=0)     ! MAXIMUM # OF ACTIVE TWIN  MODES IN ANY PHASE
+      PARAMETER(NSYSMX=24)    ! MAXIMUM # OF ACTIVE SL+TW SYSTEMS IN ANY PHASE
+      PARAMETER(NTWSMX=0)    ! MAXIMUM # OF ACTIVE TWIN  SYSTEMS IN ANY PHASE
+      PARAMETER(NNEIMX=1)     ! MAXIMUM # OF NEIGHBOURS
+      PARAMETER(NDIFMX=3)    ! MAXIMUM # OF DIFFRACTING PLANES IN ANY PHASE
+
+      parameter(iregime=2) ! 2: delta-EVPSC 3: sigma-EVPSC (placeholer?)
+      parameter(dtref=0.0005)
+      parameter(idtderiv=0) !! to allow the old (0) and the new (1) method.

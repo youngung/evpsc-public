@@ -1,0 +1,426 @@
+c-----------------------------------------------------------------------
+c     write an empty line(s)
+      subroutine w_empty_lines(imsg,n)
+c     Arguments
+c     imsg: file unit - if imsg =0 use std (*)
+c     n   : the number of lines to be emptied
+      include 'ABA_PARAM.INC'
+      integer imsg,n,i
+      if (imsg.eq.0) then
+         do 5 i=1,n
+            write(*,*)
+ 5       continue
+      else
+         do 10 i=1,n
+            write(imsg,*)
+ 10      continue
+      endif
+      return
+      end subroutine w_empty_lines
+c-----------------------------------------------------------------------
+c     Fill a line(s) with the given <chr> by repeating it for <n> times
+      subroutine fill_line(imsg,chr,n)
+c     imsg: file unit - if imsg =0 use std (*)
+c     chr : symbol that will fill the lines
+c     n   : the number of repetition
+      include 'ABA_PARAM.INC'
+      character*1 chr
+      integer imsg, n, i
+      if (imsg.eq.0) then
+         do 5 i=1,n
+            write(*,   '(a1)',advance='no') chr
+ 5       continue
+         write(*,*)
+      else
+         do 10 i=1,n
+            write(imsg,'(a1)',advance='no') chr
+ 10      continue
+         write(imsg,*)
+      endif
+
+      return
+      end subroutine fill_line
+c-----------------------------------------------------------------------
+c     Get the suitable format to print the given value <val>
+      character*80 function get_fmt(val)
+c     Argument
+c     val: the value
+      include 'ABA_PARAM.INC'
+      real*8 val,aval
+c      logical is_inf
+      aval = dabs(val)
+c      if     (is_inf(aval))                      then
+c         get_fmt='f10.0,x'
+      if (                   (aval.lt.1e-3)) then
+         get_fmt="e12.4,x"
+      elseif ((aval.ge.1e-3).and.(aval.lt.1e0 )) then
+         get_fmt="f9.5,x"
+      elseif ((aval.ge.1e0 ).and.(aval.lt.1e3 )) then
+         get_fmt="f9.3,x"
+      elseif ((aval.ge.1e3 ).and.(aval.lt.1e6 )) then
+         get_fmt="f9.0,x"
+      elseif ((aval.ge.1e6 ))                    then
+         get_fmt="e12.4,x"
+      else
+         write(*,*) 'Err: Unexpected case of max value'
+         call exit(-1)
+      endif
+      return
+      end function get_fmt
+c-----------------------------------------------------------------------
+c     Given the character value <str> find a suitible format to write
+c     this value
+      character*80 function get_fmt_str(str)
+c     Argument
+c     str: the subjected character with any arbitrary size
+      include 'ABA_PARAM.INC'
+      character(len=*) str
+      character*80 ncc
+      integer nc
+      nc = len(str)
+      write(ncc,'(i80)') nc
+      ncc = adjustl(ncc)
+      get_fmt_str='(a'//trim(ncc)//',x)'
+      return
+      end function get_fmt_str
+c-----------------------------------------------------------------------
+c     Given the integer value <ival> find a suitible format to write
+c     this value.
+      character*80 function get_fmt_int(ival)
+c     Argument
+c     ival: integer value
+      include 'ABA_PARAM.INC'
+      integer, intent(in) :: ival
+      integer nc
+      character*80 ncc
+      character*20 nc_no
+      write(ncc,'(i10)')ival
+      ncc = adjustl(ncc)
+      nc=len(trim(ncc)) ! number of character for this integer value
+      write(nc_no,'(i10)') nc
+      get_fmt_int='(i'//trim(adjustl(nc_no))//',x)'
+      return
+      end function get_fmt_int
+c-----------------------------------------------------------------------
+      subroutine w_val(iunit,str,v)
+c     Arguments
+c     iunit: file ID
+c     str : chracter that describe the passed value
+c     v   : the value
+      include 'ABA_PARAM.INC'
+      integer iunit,nc
+      character*80 fmt,get_fmt,ncc
+      character(len=*) str
+      real*8 v
+      fmt = get_fmt(v)
+      nc = len(str)
+      write(ncc,'(i80)') nc
+      ncc=adjustl(ncc)
+      fmt = trim('(a')//trim(ncc)//',x,'//trim(fmt)//')'
+      if (iunit.eq.0) then
+         write(*,    trim(fmt)) trim(str),v
+      else
+         write(iunit,trim(fmt)) trim(str),v
+      endif
+      return
+      end subroutine w_val
+c-----------------------------------------------------------------------
+      subroutine w_vals(iunit,v)
+c     Arguments
+c     iunit: file ID
+c     str : chracter that describe the passed value
+c     v   : the value
+      include 'ABA_PARAM.INC'
+      integer iunit
+      character*80 fmt,get_fmt
+      real*8 v
+      fmt = '('//trim(get_fmt(v))//')'
+      if (iunit.eq.0) then
+         write(*,    trim(fmt)) v
+      else
+         write(iunit,trim(fmt)) v
+      endif
+      return
+      end subroutine w_vals
+c-----------------------------------------------------------------------
+      subroutine w_valsc(iunit,v)
+c     Arguments
+c     iunit: file ID
+c     str : chracter that describe the passed value
+c     v   : the value
+      include 'ABA_PARAM.INC'
+      integer iunit
+      character*80 fmt,get_fmt
+      real*8 v
+      fmt = '('//trim(get_fmt(v))//')'
+      if (iunit.eq.0) then
+         write(*,    trim(fmt),advance='no') v
+      else
+         write(iunit,trim(fmt),advance='no') v
+      endif
+      return
+      end subroutine w_valsc
+c-----------------------------------------------------------------------
+      subroutine w_valc(iunit,str,v)
+c     Arguments
+c     iunit: file ID
+c     str : chracter that describe the passed value
+c     v   : the value
+      include 'ABA_PARAM.INC'
+      integer iunit,nc
+      character*80 fmt,get_fmt,ncc
+      character(len=*) str
+      real*8 v
+      fmt = get_fmt(v)
+      nc = len(str)
+      write(ncc,'(i80)') nc
+      ncc=adjustl(ncc)
+      fmt = trim('(a')//trim(ncc)//',x,'//trim(fmt)//')'
+      if (iunit.eq.0) then
+         write(*,    trim(fmt),advance='no') trim(str),v
+      else
+         write(iunit,trim(fmt),advance='no') trim(str),v
+      endif
+      return
+      end subroutine w_valc
+c-----------------------------------------------------------------------
+      subroutine w_ival(iunit,str,iv)
+c     Arguments
+c     iunit: file ID
+c     str : chracter that describe the passed value
+c     iv  : the integer value
+      include 'ABA_PARAM.INC'
+      integer, intent(in):: iv, iunit
+      character(len=*), intent(in) ::  str
+      character*80 fmt,get_fmt_int,ncc
+      integer nc
+
+      fmt = get_fmt_int(iv)
+      nc = len(str)
+      write(ncc,'(i10)') nc
+      ncc=adjustl(ncc)
+      fmt = trim('(a')//trim(ncc)//',x,'//trim(fmt)//')'
+      if (iunit.eq.0) then
+         write(*,    trim(fmt)) trim(str),iv
+      else
+         write(iunit,trim(fmt)) trim(str),iv
+      endif
+      return
+      end subroutine w_ival
+c-----------------------------------------------------------------------
+c     print out a 2nd order square matrix array
+      subroutine w_mdim(iunit,array,ndi,fact)
+c     iunit: file ID
+c     array: 2-Dimensional array
+c     ndi: size of the (ndi x ndi) array
+c     fact: multiplicative factor to scale the elements in the array
+      include 'ABA_PARAM.INC'
+      character*80 fmt,clen,get_fmt
+      integer ndi,iunit,i,j
+      real*8 array(ndi,ndi),brray(ndi,ndi),get_mmx,mxv,fact
+      do 10 i=1,ndi
+      do 10 j=1,ndi
+         brray(i,j) = array(i,j) * fact
+ 10   continue
+      mxv = get_mmx(brray,ndi,ndi)
+      fmt = get_fmt(mxv) ! common filter
+
+      write(clen,"(i2)") ndi
+      fmt = '('//trim(clen)//trim(fmt)//')'
+
+      if (iunit.ne.0) then
+         do 15 i=1,ndi
+            write(iunit,fmt) (brray(i,j),j=1,ndi)
+ 15      continue
+      else
+         do 20 i=1,ndi
+            write(*   ,fmt) (brray(i,j),j=1,ndi)
+ 20      continue
+      endif
+      return
+      end subroutine w_mdim
+c-----------------------------------------------------------------------
+c     print out a 2nd order non-square matrix array
+      subroutine w_mndim(iunit,array,ndi,nci,fact)
+c     iunit: file ID
+c     array: 2-Dimensional array
+c     ndi: size of the (ndi x ndi) array
+c     fact: multiplicative factor to scale the elements in the array
+      include 'ABA_PARAM.INC'
+      character*80 fmt,clen,get_fmt
+      integer ndi,nci,iunit,i,j
+      dimension array(ndi,nci),brray(ndi,nci)
+      real*8 array,brray,get_mmx,mxv,fact
+      do 10 i=1,ndi
+      do 10 j=1,nci
+         brray(i,j) = array(i,j) * fact
+ 10   continue
+      mxv = get_mmx(brray,ndi,nci)
+      fmt = get_fmt(mxv) ! common filter
+
+      write(clen,"(i2)") nci
+      fmt = '('//trim(clen)//trim(fmt)//')'
+
+      if (iunit.ne.0) then
+         do 15 i=1,ndi
+            write(iunit,fmt) (brray(i,j),j=1,nci)
+ 15      continue
+      else
+         do 20 i=1,ndi
+            write(*   ,fmt) (brray(i,j),j=1,nci)
+ 20      continue
+      endif
+      return
+      end subroutine w_mndim
+c-----------------------------------------------------------------------
+      subroutine w_dim(iunit,array,ndi,fact,ibr)
+c     iunit: file ID
+c     array: 1-Dimensional array
+c     ndi: size of the array
+c     fact:multiplicative factor to scale the elements in the array
+c     ibr: flag to insert line-breaker
+      include 'ABA_PARAM.INC'
+      integer, intent(in) :: iunit, ndi
+      dimension array(ndi)
+      real*8, intent(in) ::  array
+      logical, intent(in) :: ibr
+
+      dimension brray(ndi)
+      real*8 brray
+      character*80 fmt,clen,get_fmt
+      integer i
+      real*8 fact,get_mx,mxv
+
+      do 10 i=1,ndi
+         brray(i) = array(i) * fact
+ 10   continue
+      mxv = get_mx(brray,ndi)
+      fmt = get_fmt(mxv)
+
+      if (iunit.ne.0) then
+         fmt = '('//trim(fmt)//')'
+         write(iunit,fmt,advance='no') (brray(i),i=1,ndi)
+         if (ibr) write(iunit,*)
+      else
+         write(clen,"(i2)") ndi
+         fmt = '('//trim(clen)//trim(fmt)//')'
+         if (ibr) then
+            write(*   ,fmt) (brray(i),i=1,ndi)
+         else
+            write(*   ,fmt,advance='no') (brray(i),i=1,ndi)
+         endif
+      endif
+
+      return
+      end subroutine w_dim
+c-----------------------------------------------------------------------
+      subroutine w_chr(iunit,str)
+c     iunit: file ID
+c     chr : chracter
+      include 'ABA_PARAM.INC'
+      integer,intent(in):: iunit
+      character(len=*), intent(in):: str
+      character*80 fmt,get_fmt_str
+
+      fmt = get_fmt_str(str)
+      if (iunit.eq.0) then
+         write(*,    trim(fmt)) trim(str)
+      else
+         write(iunit,trim(fmt)) trim(str)
+      endif
+      return
+      end subroutine w_chr
+c-----------------------------------------------------------------------
+      subroutine w_chrc(iunit,str)
+c     iunit: file ID
+c     chr : chracter
+      include 'ABA_PARAM.INC'
+      integer, intent(in) :: iunit
+      character(len=*), intent(in) ::  str
+      character*80 fmt,get_fmt_str
+
+      fmt = get_fmt_str(str)
+      if (iunit.eq.0) then
+         write(*,    trim(fmt),advance='no') trim(str)
+      else
+         write(iunit,trim(fmt),advance='no') trim(str)
+      endif
+      return
+      end subroutine w_chrc
+c-----------------------------------------------------------------------
+c     print header
+      subroutine print_head(i)
+c     i: file unit (use std if 0, use imsg elsewhere)
+      integer i
+      if (i.eq.0) then ! USE std
+         call w_empty_lines(0,2)
+         write(*,*) '*------------------*'
+         write(*,*) '|       UMAT       |'
+         write(*,*) '*------------------*'
+         call w_empty_lines(0,1)
+      else
+         call w_empty_lines(i,2)
+         write(i,*) '*------------------*'
+         write(i,*) '|       UMAT       |'
+         write(i,*) '*------------------*'
+         call w_empty_lines(i,1)
+      endif
+
+      return
+      end subroutine print_head
+c-----------------------------------------------------------------------
+c     print footer
+      subroutine print_foot(i)
+c     i: file unit (use std if 0, use imsg elsewhere)
+      integer i
+
+      if (i.eq.0) then ! USE std
+         call w_empty_lines(0,2)
+         write(*,*) '*------------------*'
+         write(*,*) '|       END        |'
+         write(*,*) '*------------------*'
+         call w_empty_lines(0,1)
+      else
+         call w_empty_lines(i,2)
+         write(i,*) '*------------------*'
+         write(i,*) '|       END        |'
+         write(i,*) '*------------------*'
+         call w_empty_lines(i,1)
+      endif
+
+      return
+      end subroutine print_foot
+c-----------------------------------------------------------------------
+      subroutine stop_debug(iunit)
+      include 'ABA_PARAM.INC'
+      integer iunit
+      call fill_line(iunit,'*',52)
+      call w_chr(iunit, '--  Reached safely at debugging the point  --')
+      call fill_line(iunit,'*',52)
+      call exit(-1)
+      end subroutine
+c-----------------------------------------------------------------------
+
+
+c$$$      program test
+c$$$      character*80 get_fmt_int,get_fmt
+c$$$      integer i,n
+c$$$      real*8 val
+c$$$
+c$$$      do i=-9,9
+c$$$         val = 10d0**i
+c$$$         !write(*,*) i, trim(get_fmt(val))
+c$$$         call w_val(0,'dum',val)
+c$$$      enddo
+c$$$
+c$$$c$$$      call w_chr(0,'dum')
+c$$$c$$$      call w_chr(0,'dum2439 33')
+c$$$
+c$$$c$$$      write(*,*) get_fmt_int(1)
+c$$$c$$$      write(*,*) get_fmt_int(10)
+c$$$c$$$      write(*,*) get_fmt_int(100)
+c$$$c$$$      write(*,*) get_fmt_int(10000)
+c$$$
+c$$$      end program test
+c$$$      include '/home/younguj/repo/abaqusPy/umats/lib/lib.f'
+c$$$      include '/home/younguj/repo/abaqusPy/umats/lib/is.f'

@@ -1,0 +1,123 @@
+EVPSC
+Copyright (c) 2020-2026, Youngung Jeong and EVPSC contributors
+
+EVPSC is an elasto-visco-plastic self-consistent (EVPSC) polycrystal
+plasticity code. It is distributed under the BSD 3-Clause License
+(see LICENSE).
+
+
+1. Origin: VPSC
+---------------
+
+EVPSC is derived from the visco-plastic self-consistent (VPSC) code
+developed by R. A. Lebensohn and C. N. Tome at Los Alamos National
+Laboratory (LANL). The core VPSC algorithms (Eshelby tensors,
+self-consistent homogenization, hardening laws, twinning, grain shape
+and texture updates, and the associated utilities) were adapted from
+VPSC and extended by Y. Jeong and C. N. Tome to account for elasticity,
+and by Y. Jeong, B. Jeon and C. N. Tome for the Abaqus UMAT interface.
+
+The public release of VPSC (version 8) is available at
+https://github.com/lanl/VPSC_code and carries the following notice,
+reproduced here as required by its license:
+
+    (c) 2022. Triad National Security, LLC. All rights reserved.
+
+    This program was produced under U.S. Government contract
+    89233218CNA000001 for Los Alamos National Laboratory (LANL), which is
+    operated by Triad National Security, LLC for the U.S. Department of
+    Energy/National Nuclear Security Administration. All rights in the
+    program are reserved by Triad National Security, LLC, and the U.S.
+    Department of Energy/National Nuclear Security Administration. The
+    Government is granted for itself and others acting on its behalf a
+    nonexclusive, paid-up, irrevocable worldwide license in this material
+    to reproduce, prepare derivative works, distribute copies to the
+    public, perform publicly and display publicly, and to permit others
+    to do so.
+
+    This program is open source under the BSD-3 License. Redistribution
+    and use in source and binary forms, with or without modification, are
+    permitted provided that the following conditions are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in
+       the documentation and/or other materials provided with the
+       distribution.
+    3. Neither the name of the copyright holder nor the names of its
+       contributors may be used to endorse or promote products derived
+       from this software without specific prior written permission.
+
+    This software is provided by the copyright holders and contributors
+    "as is" and any express or implied warranties, including, but not
+    limited to, the implied warranties of merchantability and fitness for
+    a particular purpose are disclaimed. In no event shall the copyright
+    holder or contributors be liable for any direct, indirect, incidental,
+    special, exemplary, or consequential damages (including, but not
+    limited to, procurement of substitute goods or services; loss of use,
+    data, or profits; or business interruption) however caused and on any
+    theory of liability, whether in contract, strict liability, or tort
+    (including negligence or otherwise) arising in any way out of the use
+    of this software, even if advised of the possibility of such damage.
+
+Neither LANL, Triad National Security, LLC, nor the original VPSC
+authors endorse EVPSC or are responsible for its modifications.
+
+
+2. References
+-------------
+
+VPSC:
+  R. A. Lebensohn, C. N. Tome, A self-consistent anisotropic approach for
+  the simulation of plastic deformation and texture development of
+  polycrystals: Application to zirconium alloys, Acta Metallurgica et
+  Materialia 41 (1993) 2611-2624.
+  https://doi.org/10.1016/0956-7151(93)90130-K
+  C. N. Tome, R. A. Lebensohn, Material Modeling with the
+  Visco-Plastic Self-Consistent (VPSC) Approach: Theory and Practical
+  Applications, Elsevier (2023).
+
+EVPSC:
+  Y. Jeong, C. N. Tome, An efficient elasto-visco-plastic self-consistent
+  formulation: Application to steel subjected to loading path changes,
+  International Journal of Plasticity 135 (2020) 102812.
+  https://doi.org/10.1016/j.ijplas.2020.102812
+
+  Y. Jeong, B. Jeon, C. N. Tome, Finite element analysis using an
+  incremental elasto-visco-plastic self-consistent polycrystal model:
+  FE simulations on Zr and low-carbon steel subjected to bending,
+  stress-relaxation, and unloading, International Journal of Plasticity
+  147 (2021) 103110. https://doi.org/10.1016/j.ijplas.2021.103110
+
+  B. Jeon, Y. Jeong, C. N. Tome, A critical discussion of
+  elasto-visco-plastic self-consistent (EVPSC) models, Journal of
+  Materials Research and Technology 33 (2024) 7596-7609.
+  https://doi.org/10.1016/j.jmrt.2024.11.043
+
+
+3. Contributors
+---------------
+
+EVPSC is developed by Youngung Jeong (Changwon National University) in
+collaboration with Carlos N. Tome. The following people, mostly former
+students at Changwon National University, contributed to the code:
+
+  Bohye Jeon
+  Jaeseong Lee
+  Mooyeong Joo
+  Euichan Jeong
+  Kyeongwon Hwang
+  Jaeseob Park
+  Jinhwa Park
+  Yurok Shin
+  Shin-Yeong Lee
+  Bugeon Bae
+
+
+4. Third-party code
+-------------------
+
+src/vpsc_src/library7.sub contains numerical routines (ran2, ludcmp,
+lubksb, jacobi, eigsrt, gauleg) adapted from Numerical Recipes
+(W. H. Press et al., Cambridge University Press). The same routines are
+part of the LANL VPSC8 release.

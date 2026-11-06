@@ -1,0 +1,87 @@
+cff-version: 1.2.0
+message: "If you use EVPSC, please cite the article below and the original VPSC work listed under references."
+title: "EVPSC: Elasto-visco-plastic self-consistent polycrystal plasticity code"
+type: software
+license: BSD-3-Clause
+authors:
+  - family-names: Jeong
+    given-names: Youngung
+    affiliation: "Changwon National University"
+    orcid: "https://orcid.org/0000-0001-6496-8115"
+  - family-names: Tome
+    given-names: Carlos N.
+    affiliation: "Los Alamos National Laboratory"
+  - family-names: Jeon
+    given-names: Bohye
+keywords:
+  - crystal plasticity
+  - self-consistent
+  - elasto-visco-plasticity
+  - polycrystal
+  - texture
+preferred-citation:
+  type: article
+  title: "An efficient elasto-visco-plastic self-consistent formulation: Application to steel subjected to loading path changes"
+  authors:
+    - family-names: Jeong
+      given-names: Youngung
+    - family-names: Tome
+      given-names: Carlos N.
+  journal: "International Journal of Plasticity"
+  volume: 135
+  start: 102812
+  year: 2020
+  doi: "10.1016/j.ijplas.2020.102812"
+references:
+  - type: article
+    title: "Finite element analysis using an incremental elasto-visco-plastic self-consistent polycrystal model: FE simulations on Zr and low-carbon steel subjected to bending, stress-relaxation, and unloading"
+    authors:
+      - family-names: Jeong
+        given-names: Youngung
+      - family-names: Jeon
+        given-names: Bohye
+      - family-names: Tome
+        given-names: Carlos N.
+    journal: "International Journal of Plasticity"
+    volume: 147
+    start: 103110
+    year: 2021
+    doi: "10.1016/j.ijplas.2021.103110"
+  - type: article
+    title: "A critical discussion of elasto-visco-plastic self-consistent (EVPSC) models"
+    authors:
+      - family-names: Jeon
+        given-names: Bohye
+      - family-names: Jeong
+        given-names: Youngung
+      - family-names: Tome
+        given-names: Carlos N.
+    journal: "Journal of Materials Research and Technology"
+    volume: 33
+    start: 7596
+    end: 7609
+    year: 2024
+    doi: "10.1016/j.jmrt.2024.11.043"
+  - type: article
+    title: "A self-consistent anisotropic approach for the simulation of plastic deformation and texture development of polycrystals: application to zirconium alloys"
+    authors:
+      - family-names: Lebensohn
+        given-names: Ricardo A.
+      - family-names: Tome
+        given-names: Carlos N.
+    journal: "Acta Metallurgica et Materialia"
+    volume: 41
+    issue: 9
+    start: 2611
+    end: 2624
+    year: 1993
+    doi: "10.1016/0956-7151(93)90130-K"
+  - type: software
+    title: "VPSC: Visco-plastic self-consistent code, version 8"
+    authors:
+      - family-names: Lebensohn
+        given-names: Ricardo A.
+      - family-names: Tome
+        given-names: Carlos N.
+    repository-code: "https://github.com/lanl/VPSC_code"
+    license: BSD-3-Clause

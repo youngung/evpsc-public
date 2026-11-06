@@ -1,0 +1,45 @@
+** input to run dEVPSC-FE run via UMAT
+* isolver (0, 1)
+0
+* dimension file
+../../../src/vpsc_src/parameters.dim
+* nph
+1
+* wph
+1.0
+* iodf (0: discrete texture; 1: odf (mtex format))
+1
+* texture/ODF file
+ferrite_odf.odf
+* sx file
+F.sx
+* idiff (0: no diffraction; 1: diffraction)
+0
+* diff file (dummy if idiff = 0 is given in the above line)
+bcc.dif
+* abaqus input file
+UMAT_DEV_VEL_0001.inp
+* noel and npt subjected to 'lookup' (could be dummy unless <isa> flag is on)
+1
+1 1
+* ipx
+0
+* pxfn (dummy if ipx is 0)
+dummy
+* implicit_update (0: False, 1: True)
+0
+
+
+
+
+
+
+
+  **** Alternative material: low carbon steel with a discrete texture
+  **** (replace the corresponding lines above)
+* iodf (0: discrete texture; 1: odf (mtex format))
+0
+* texture/ODF file
+texinlc.tex
+* sx file
+lc_fstar7.sx

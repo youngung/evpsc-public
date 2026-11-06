@@ -1,0 +1,208 @@
+c-----------------------------------------------------------------------
+c     Dimension of arrays. Reduntantly large size of arrays may impact
+c     the computational speed of EVPSC-UMAT.
+      include "parameters.dim"
+c-----------------------------------------------------------------------
+c     FE/IO input related condition (used in 'statev_io.f', 'umat.f'
+c     ,'vumat.f', 'load_statev.f')
+      integer is_initialized_statev
+c-----------------------------------------------------------------------
+c     AVERAGE
+      real*8 SAV(6),dsav(6),SBAR(6),DSBAR(6),EPSTOT(3,3),EPSVM,EIJINCR,
+     $     EVMINCR,TEMP,SVM,DVM,sbardot(6)
+c-----------------------------------------------------------------------
+c     DATACRYST
+      real*8 DNCA(3,NSYSMX,NPHMX),DBCA(3,NSYSMX,NPHMX),
+     $     SCHCA(5,NSYSMX,NPHMX),NSCHCA(6,NSYSMX,NPHMX),C6,
+     $     HARD(NSYSMX,NSYSMX,NPHMX)
+      integer NRS(NSYSMX,NPHMX),ISENSE(NSYSMX,NPHMX),
+     $     ITWTYPE(NSYSMX,NPHMX)
+c-----------------------------------------------------------------------
+c     DATAGRAIN
+      real*8 ASGR(3,3,3,3,NGRMX),AXISGR(0:3,3,NGRMX),AG(3,3,NGRMX),
+     $     FIJGR(3,3,NGRMX),XLIJGR(3,3,NGRMX),WGT(NGRMX)
+      integer NGR(0:NPHMX)
+c-----------------------------------------------------------------------
+c     DATAMODES
+      real*8 TWTHRES(2,NTWMMX,NPHmx),TWSH(NTWMMX,NPHmx)
+      integer NMODES(NPHmx),NSLMOD(NPHmx),NTWMOD(NPHmx),
+     $     NSYST(NPHmx),NTWSYS(NPHmx),NSLSYS(NPHmx),
+     $     NSM(NMODMX,NPHmx),ISECTW(NSYSMX,NPHmx)
+c-----------------------------------------------------------------------
+c     DATAPHASE
+      real*8 WPH(NPHMX),EULERPH(3,0:NPHMX),AXISPH(0:3,3,0:NPHMX),
+     $     FIJPH(3,3,0:NPHMX),XLIJPH(3,3,NPHMX),ASPH(3,3,3,3,NPHMX),
+     $     CRIT_SHP(NPHMX)
+      integer NPH,NELEM,icrysymph(nphmx),ISHAPE(0:NPHMX),
+     $     IFLAT(0:NPHMX),IFRAG(NPHMX)
+c-----------------------------------------------------------------------
+c     grainprops
+      real*8 CRSS(NSYSMX,NGRMX),SG(6,NGRMX),dsg(6,ngrmx),sgdot(6,ngrmx),
+     $     GTOTGR(NGRMX),DG(6,NGRMX),TG(6,NGRMX),dg_trans(6,ngrmx),
+     $     GAMD0S(NSYSMX,NGRMX),dsgtry(6,NGRMX),sgtry(6,ngrmx),
+     $     GAMDOT(NSYSMX,NGRMX),
+     $     SCH(5,NSYSMX,NGRMX),NSCH(6,NSYSMX,NGRMX),TAUE(NSYSMX,NGRMX)
+c-----------------------------------------------------------------------
+c     FILES
+      CHARACTER*120 FILEHIST,PROSA
+c     IOUNITS
+      INTEGER UR_SX,UR_TX,UR_SHP,UR_STV,UR_CUB,UR_HIS,UR_DIF,
+     $     UR_ECTE,UR_EBSD,UW_ERR,
+     $     UW_LOG,UW_DIS,UW_TAU
+c-----------------------------------------------------------------------
+c     MISCEL
+      integer JRAN
+c-----------------------------------------------------------------------
+c     RUNCOND
+      integer ITMAXEXT,ITMAXINT,ITMAXSO,IRECOVER,ISAVE,NPROC,IVGVAR,
+     $     NWRITE,INTERACTION,ICUBCOM,ICS,NUNIQUE,NRSMIN,IHARDLAW,
+     $     IRATESENS,ICOMPGRAIN,IUPDORI,IUPDSHP,IUPDHAR,IBCINV,
+     $     IRSVAR,IFLU,ITWINLAW,jxrsini,jxrsfin,jxrstep
+      real*8 ERRS,ERRD,ERRM,ERRSO,WORK(NGRMX)
+c-----------------------------------------------------------------------
+c     STATSH
+      real*8 activ(nphmx),gavmod(nmodmx,nphmx),gavacc(nmodmx,nphmx),
+     $     GAVPH(NPHMX)
+c-----------------------------------------------------------------------
+c     STATTW
+      real*8 EFTWFR(NTWMMX,NPHMX),TWFRPH(NTWMMX,NPHMX),
+     $     TWFRSY(NTWSMX,NGRMX),PRITW(NPHMX),SECTW(NPHMX),
+     $     VAR_VF(6,NTWMMX,NPHMX)
+      integer SCH_STAT(-5:15,NTWMMX,NPHMX),VAR_STAT(6,NTWMMX,NPHMX)
+      integer KTWSMX(NGRMX),NTWEVENTS(NGRMX)
+c-----------------------------------------------------------------------
+CFEE
+c     TESTCOND
+      real*8 SCAUCHY(3,3),LIJBARc(3,3),DSIM(3,3),WBARc(3,3),
+     $     SDEVIAT(3,3),
+c     $     gamdot_old(nsysmx,ngrmx),
+     $     DSIMCTRL
+      integer iDBARv(6),iSBARv(6),ILBAR(3,3),ICTRL,NSTEPS,STRAIN_CONTROL
+c-----------------------------------------------------------------------
+c     TWIN
+      integer ICOMPGR(NGRMX)
+c-----------------------------------------------------------------------
+c     NEIGHB
+      real*8 WNEIGH(0:NNEIMX,NGRMX)
+      integer NEIGH(0:NNEIMX,NGRMX),NNEIGH
+c-----------------------------------------------------------------------
+c     ELASTIC
+      real*8 CELCC(6,6,NPHmx),CELCS(6,6,NGRMX),SELCC(6,6,NPHmx),
+     $     mgel(6,6,NGRMX),ATHCC(6,NPHmx), athcs(6,ngrmx),celav(6,6),
+     $     selav(6,6),AC_EL(6,6,NGRMX),bc_el(6,6,ngrmx),sbar_old(6)
+c-----------------------------------------------------------------------
+c     DIFFRACT
+      integer idiff(nphmx),ndiff(nphmx),NFAMILY(NDIFMX,NPHMX),
+     $     NGRSETPH(NDIFMX,0:NPHMX),IGRSET(NDIFMX,0:NGRMX,4)
+      real*8 DIFF_VS(3,NDIFMX,NPHMX),DIFF_VC(3,24,NDIFMX,NPHMX),
+     $     WGTSETPH(NDIFMX,0:NPHMX),ANGDETECTOR(nphmx),EELGR(6,ngrmx)
+      character*120 filediff(nphmx)
+c-----------------------------------------------------------------------
+c     EVPMOD
+      real*8 dg0(6,ngrmx)
+c-----------------------------------------------------------------------
+c     EVP
+      real*8 sg_old(6,ngrmx),dge(6,ngrmx),dgp(5,ngrmx),dav(6),DBAR(6),
+     $     eav(6),stdevs(6),stdevd(6),stdeve(6),
+     $     epstot_el(3,3),epstot_tr(3,3),DBAR0(6),
+     $     mbar(6,6),LBAR(6,6),mbardot(6,6),mgtg(6,6,ngrmx),press,
+     $     presswgt,dbar0dot(6)
+c-----------------------------------------------------------------------
+c     Voce hardening
+      real*8 tau_voce(1:nsysmx,0:1,1:nphmx),
+     $     thet_voce(1:nsysmx,0:1,1:nphmx),
+     $     hpfac_voce(1:nsysmx,1:nphmx)
+c-----------------------------------------------------------------------
+c     RGVB hardening
+      integer ishear_tag(NSYSMX,NGRMX),ibs_law             ! 1/29/2016
+      real*8 xMu(nphmx,NMODMX),xB(nphmx,NMODMX),tau0(nphmx,NMODMX),
+     $     xf_self(nphmx,NMODMX),xf_lat(nphmx,NMODMX),xD(nphmx,NMODMX),
+     $     xK(nphmx,NMODMX),alpham(nphmx,NSYSMX,NSYSMX),
+     $     xlambda(nmodmx,NGRMX),xp(nsysmx,NGRMX),xbx(nsysmx),
+     $     facs(nphmx,nsysmx),pow(nphmx),xRho_min(nphmx,NMODMX),
+     $     xRho_max(nphmx,NMODMX),xRho_infl(nphmx,NMODMX),
+     $     rho_f(NSYSMX,NGRMX),rho_r(2*NSYSMX,NGRMX),taud(nsysmx),
+     $     rho_prev(NSYSMX,NGRMX),rho_deb_rgvb(nsysmx,NGRMX),
+     $     tauini(nphmx,NSYSMX),rhos(nmodmx),rho_mod(nmodmx),
+     $     fac(nphmx,nmodmx),for_rhos(nmodmx),rev_rhos(nmodmx),
+     $     for_rhosl(nmodmx),rev_rhosl(nmodmx),AMSS(NSYSMX,NSYSMX),
+     $     deltaD(NSYSMX,NGRMX),xp_g(NGRMX),drho_tot(NSYSMX,NGRMX),
+     $     debs(NGRMX),rho_ps(NSYSMX,NGRMX),cts(NSYSMX,NSYSMX),
+     $     tautwint(nsysmx)
+c-----------------------------------------------------------------------
+c     EVPSC & fstar
+      real*8 fstar,factor(ngrmx),alpl(ngrmx),alplpx,plwork
+c-----------------------------------------------------------------------
+c     Accumulated rotation
+      real*8 rot_acum(3,3),acctimefe
+      integer kount_umat_call
+c-----------------------------------------------------------------------
+c     -- FEM restart flag
+c      integer ires_ready
+c-----------------------------------------------------------------------
+c     intent(inout); is defined with iopt=1; and does not evolve;
+c     and is used for iopt=1 / 2
+      real*8 grsze(nphmx),chifor,chisub,rho_initw,TEMPref,burg(nmodmx),
+     $     actener(nmodmx),K1gener(nmodmx),DRAG(nmodmx),EDOT0(nmodmx),
+     $     rho_inits(nmodmx),Atau0(nmodmx),Atau1(nmodmx),Atau2(nmodmx),
+     $     Fdeb0(nmodmx),Fdeb1(nmodmx),Fdeb2(nmodmx),HPcoef(nmodmx),
+     $     T0nucl(nmodmx),T1nucl(nmodmx),T2nucl(nmodmx),T0prop(nmodmx),
+     $     T1prop(nmodmx),T2prop(nmodmx),CTWSL(NTWMMX,NMODMX),
+     $     CTS1(NTWMMX,NMODMX),
+     $     CTS0(NTWMMX,NMODMX),CTS2(NTWMMX,NMODMX),
+     $     K3recov,K4recov,D0vac,Efvac,Emvac,
+     $     rho_deb(ngrmx),
+     $     rho_s_for(nsysmx,ngrmx),rho_s_deb(nsysmx,ngrmx),
+     $     xmu_mode(nmodmx,nphmx),edotref
+c-----------------------------------------------------------------------
+c     accumulated activity
+      real*8 aa(nmodmx),ac(nphmx)
+c-----------------------------------------------------------------------
+      integer mxndeg
+      parameter(mxndeg=3)
+c     polynomial fit of temperature-dependent el modulus and ctes.
+      real*8 cijv_fit(nphmx,0:mxndeg,6,6),cte_fit(nphmx,0:mxndeg,6)
+      integer ndegs_fit(nphmx,2)
+c-----------------------------------------------------------------------
+c     Recrystallization model
+      integer nclustermx,nchildmx,ncluster,nchildlimit
+c      parameter(nclustermx=200,nchildmx=300,nchildlimit=10) !! for copper (Mar 2nd, 2026)
+      parameter(nclustermx=8000,nchildmx=25,nchildlimit=15) !! to test 'rexdd_addcluster'
+c-----------------------------------------------------------------------
+c     Permanent grain ID tracking
+      integer ngidmx,ngid_total
+      parameter(ngidmx=10*ngrmx)
+
+      integer gid_of_slot(ngrmx),
+     $     slot_of_gid(ngidmx),
+     $     gid_birth_step(ngidmx),
+     $     gid_death_step(ngidmx),
+     $     gid_parent(ngidmx)
+
+c     Permanent GID state convention:
+c
+c       gid_birth_step = -1 : GID has never been issued
+c       gid_birth_step >= 0 : birth step
+c
+c       gid_death_step = -2 : NOT BORN
+c       gid_death_step = -1 : ALIVE
+c       gid_death_step >= 0 : DEAD at that step
+c
+c       slot_of_gid = 0      : no active slot
+c       slot_of_gid > 0      : current dynamic slot
+c-----------------------------------------------------------------------
+c     maybe, it should also consider nchild_lowerlimit to avoid
+c     clusters consisting of too fewer members.
+      integer idclusterset(nclustermx,0:nchildmx),nchildset(nclustermx),
+     $     nkidstot,idclusterset_reverse(ngrmx),
+     $     nkount(nclustermx),
+     $     ngref,igref(ngrmx)   ! <ngref> and <igref> are used to track down DRX percent
+c     igref > 0 : the reference grain is alive
+c     igref =-1 : the reference grain is fully recrystallized.
+
+      integer irx
+      real*8 rexgrowpar(5),rexnuclpar(5)
+      real*8 radius(ngrmx),drad(ngrmx),wgt_old(ngrmx),
+     $     dwgt_grow(ngrmx),dwgt_nucl(ngrmx),
+     $     vpx,rexdd_tiny
+      logical inucleated_px,inucleated_cl(nclustermx)
