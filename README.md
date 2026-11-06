@@ -1,8 +1,10 @@
-# EVPSC: Elasto-Visco-Plastic Self-Consistent polycrystal model
+# ΔEVPSC: Elasto-Visco-Plastic Self-Consistent polycrystal model
 
-EVPSC is a Fortran implementation of an elasto-visco-plastic
-self-consistent (EVPSC) polycrystal plasticity model based on a single
-homogeneous effective medium (HEM). It can be run as a stand-alone
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23999006.svg)](https://doi.org/10.5281/zenodo.23999006)
+
+ΔEVPSC (delta-EVPSC) is a Fortran implementation of an
+elasto-visco-plastic self-consistent (EVPSC) polycrystal plasticity
+model based on a single homogeneous effective medium (HEM). It can be run as a stand-alone
 program or used as a material subroutine in the Abaqus finite element
 solver.
 
@@ -31,10 +33,9 @@ R. A. Lebensohn and C. N. Tome (Los Alamos National Laboratory). See
 
 | Path                   | Contents                                         |
 |:-----------------------|:-------------------------------------------------|
-| `src/vpsc_src/`        | Fortran source of the stand-alone EVPSC program  |
+| `src/vpsc_src/`        | Fortran source of the stand-alone EVPSC program and the single-crystal file parser (`parser_fnsx.f`) |
 | `umat/src/evpsc_incr/` | Abaqus UMAT interface (VUMAT: placeholder only)  |
 | `umat/src/pheno/`      | Phenomenological constitutive models for Abaqus  |
-| `fortran_parsers/`     | Parser for single-crystal files                  |
 | `pyscripts/`           | Helper scripts (`gen_dim.py`, `build.py`, ...)   |
 | `*.mk`, `Makefile`     | Build rules                                      |
 

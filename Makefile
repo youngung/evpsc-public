@@ -99,7 +99,7 @@ evpscf: $(files_evpsc_common)
 
 
 parsers: objdir/sx_version_tester.o
-	$(FC) objdir/sx_version_tester.o fortran_parsers/parser_fnsx.f -o sx_parser
+	$(FC) objdir/sx_version_tester.o src/vpsc_src/parser_fnsx.f -o sx_parser
 
 docs:
 	make -j all -f make_docs.mk

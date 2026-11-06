@@ -321,7 +321,6 @@ def archive(hashcode,dst,ngrs):
         +glob('src/vpsc_src/*.f')\
         +glob('src/vpsc_src/*.sub')\
         +glob('src/vpsc_src/*.dim')\
-        +glob('fortran_parsers/*.f')\
         +glob('pyscripts/*.py')
 
     fns.append('Makefile')
