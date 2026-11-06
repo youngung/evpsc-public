@@ -1,8 +1,8 @@
-# EVPSC: Elasto-Visco-Plastic Self-Consistent polycrystal model
+# ΔEVPSC: Elasto-Visco-Plastic Self-Consistent polycrystal model
 
-EVPSC is a Fortran implementation of an elasto-visco-plastic
-self-consistent (EVPSC) polycrystal plasticity model based on a single
-homogeneous effective medium (HEM). It can be run as a stand-alone
+ΔEVPSC (delta-EVPSC) is a Fortran implementation of an
+elasto-visco-plastic self-consistent (EVPSC) polycrystal plasticity
+model based on a single homogeneous effective medium (HEM). It can be run as a stand-alone
 program or used as a material subroutine in the Abaqus finite element
 solver.
 

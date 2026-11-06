@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use EVPSC, please cite the article below and the original VPSC work listed under references."
-title: "EVPSC: Elasto-visco-plastic self-consistent polycrystal plasticity code"
+title: "ΔEVPSC (delta-EVPSC): Elasto-visco-plastic self-consistent polycrystal plasticity code"
 type: software
 license: BSD-3-Clause
 authors:
