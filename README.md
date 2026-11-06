@@ -31,10 +31,9 @@ R. A. Lebensohn and C. N. Tome (Los Alamos National Laboratory). See
 
 | Path                   | Contents                                         |
 |:-----------------------|:-------------------------------------------------|
-| `src/vpsc_src/`        | Fortran source of the stand-alone EVPSC program  |
+| `src/vpsc_src/`        | Fortran source of the stand-alone EVPSC program and the single-crystal file parser (`parser_fnsx.f`) |
 | `umat/src/evpsc_incr/` | Abaqus UMAT interface (VUMAT: placeholder only)  |
 | `umat/src/pheno/`      | Phenomenological constitutive models for Abaqus  |
-| `fortran_parsers/`     | Parser for single-crystal files                  |
 | `pyscripts/`           | Helper scripts (`gen_dim.py`, `build.py`, ...)   |
 | `*.mk`, `Makefile`     | Build rules                                      |
 
