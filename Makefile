@@ -104,11 +104,14 @@ parsers: objdir/sx_version_tester.o
 docs:
 	make -j all -f make_docs.mk
 
+test-python:
+	python -m unittest discover -s tests -v
+
 ## distributed version
 evpsc_dist: $(objects_evpsc_common)
 	$(FC) $(FLAGS) -o evpsc $(objects_evpsc_common)
 
-.PHONY: all clean zip tar evpsc_dist parsers docs evpsc
+.PHONY: all clean zip tar evpsc_dist parsers docs evpsc test-python
 all: evpsc parsers docs
 
 $(objects_evpsc_common): | $(OBJDIR)
